@@ -6,6 +6,13 @@
       "queryLines": [
         "SELECT * FROM dad_open_data.news.all_marketplace_news"
       ]
+    },
+    {
+      "name": "a5a40019",
+      "displayName": "all_news",
+      "queryLines": [
+        "SELECT * FROM main.default.all_news"
+      ]
     }
   ],
   "pages": [
@@ -3859,6 +3866,105 @@
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "d9e2fa41",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "try_parse_url",
+            "queries": [
+              {
+                "name": "dashboards/01f0ddbdaa791973a909503975f84006/datasets/01f0ddbdaa791cfaba4fd729f07f465e_try_parse_url",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "try_parse_url",
+                      "expression": "`try_parse_url`"
+                    },
+                    {
+                      "name": "try_parse_url_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "try_parse_url",
+                    "queryName": "dashboards/01f0ddbdaa791973a909503975f84006/datasets/01f0ddbdaa791cfaba4fd729f07f465e_try_parse_url"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "try_parse_url"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "source",
+            "queries": [
+              {
+                "name": "dashboards/01f0ddbdaa791973a909503975f84006/datasets/01f0ddbdaa791cfaba4fd729f07f465e_source",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "source",
+                      "expression": "`source`"
+                    },
+                    {
+                      "name": "source_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "source",
+                    "queryName": "dashboards/01f0ddbdaa791973a909503975f84006/datasets/01f0ddbdaa791cfaba4fd729f07f465e_source"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "source"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
     }
   ],
   "uiSettings": {
