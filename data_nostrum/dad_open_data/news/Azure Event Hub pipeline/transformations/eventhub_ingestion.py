@@ -1,6 +1,7 @@
 from pyspark import pipelines as dp
 import pyspark.sql.types as T
 from pyspark.sql.functions import *
+from utilities.utils import get_schema
 
 # Event Hubs configuration
 EH_NAMESPACE                    = spark.conf.get("iot.ingestion.eh.namespace")
@@ -29,12 +30,145 @@ KAFKA_OPTIONS = {
   "startingOffsets"          : spark.conf.get("iot.ingestion.spark.startingOffsets")
 }
 
+# Schema dettagliato della risposta APITube
+old_schema = """
+STRUCT<
+  id: LONG,
+  href: STRING,
+  published_at: STRING,
+  title: STRING,
+  description: STRING,
+  body: STRING,
+  language: STRING,
 
-# Basic record parsing and adding ETL audit columns
+  author: STRUCT<
+    id: LONG,
+    name: STRING
+  >,
+
+  image: STRING,
+
+  categories: ARRAY<STRUCT<
+    id: STRING,
+    name: STRING,
+    score: DOUBLE,
+    taxonomy: STRING,
+    links: STRUCT<
+      self: STRING
+    >
+  >>,
+
+  topics: ARRAY<STRING>,
+
+  industries: ARRAY<STRUCT<
+    id: LONG,
+    name: STRING,
+    links: STRUCT<
+      self: STRING
+    >
+  >>,
+
+  entities: ARRAY<STRUCT<
+    id: LONG,
+    name: STRING,
+    links: STRUCT<
+      self: STRING,
+      wikipedia: STRING,
+      wikidata: STRING
+    >,
+    types: ARRAY<STRING>,
+    language: STRING,
+    frequency: LONG,
+    title: STRUCT<
+      pos: ARRAY<STRUCT<
+        start: LONG,
+        end: LONG
+      >>
+    >,
+    body: STRUCT<
+      pos: ARRAY<STRUCT<
+        start: LONG,
+        end: LONG
+      >>
+    >
+  >>,
+
+  source: STRUCT<
+    id: LONG,
+    domain: STRING,
+    home_page_url: STRING,
+    type: STRING,
+    bias: STRING,
+    rankings: STRUCT<
+      opr: DOUBLE
+    >,
+    location: STRUCT<
+      country_name: STRING,
+      country_code: STRING
+    >,
+    favicon: STRING
+  >,
+
+  sentiment: STRUCT<
+    overall: STRUCT<
+      score: DOUBLE,
+      polarity: STRING
+    >,
+    title: STRUCT<
+      score: DOUBLE,
+      polarity: STRING
+    >,
+    body: STRUCT<
+      score: DOUBLE,
+      polarity: STRING
+    >
+  >,
+
+  summary: ARRAY<STRUCT<
+    sentence: STRING,
+    sentiment: STRUCT<
+      score: DOUBLE,
+      polarity: STRING
+    >
+  >>,
+
+  keywords: ARRAY<STRING>,
+  links: ARRAY<STRING>,
+
+  media: ARRAY<STRUCT<
+    url: STRING,
+    type: STRING,
+    format: STRING
+  >>,
+
+  story: STRUCT<
+    id: LONG,
+    uri: STRING
+  >,
+
+  is_duplicate: BOOLEAN,
+  is_paywall: BOOLEAN,
+  is_breaking: BOOLEAN,
+
+  read_time: LONG,
+  sentences_count: LONG,
+  paragraphs_count: LONG,
+  words_count: LONG,
+  characters_count: LONG,
+
+  getdata_timestamp: TIMESTAMP,
+  enrich_timestamp: TIMESTAMP,
+  loaddata_timestamp: TIMESTAMP
+>
+"""
+
+response_schema = get_schema()
+
 def parse(df):
-  return (df
+  return (
+    df
     .withColumn("records", col("value").cast("string"))
-    .withColumn("parsed_records", col("records"))
+    .withColumn("parsed_records", from_json(col("records"), old_schema))
     .withColumn("eh_enqueued_timestamp", expr("timestamp"))
     .withColumn("eh_enqueued_date", expr("to_date(timestamp)"))
     .withColumn("etl_processed_timestamp", col("current_timestamp"))
@@ -46,7 +180,7 @@ def parse(df):
   comment="Raw EventHub Events",
   table_properties={
     "quality": "bronze",
-    "pipelines.reset.allowed": "false" # preserves the data in the delta table if you do full refresh
+    "pipelines.reset.allowed": "false"
   },
   partition_cols=["eh_enqueued_date"]
 )
