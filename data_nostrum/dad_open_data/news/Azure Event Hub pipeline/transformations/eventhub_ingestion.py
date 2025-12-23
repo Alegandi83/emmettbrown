@@ -58,8 +58,16 @@ STRUCT<
     >
   >>,
 
-  topics: ARRAY<STRING>,
-
+  topics: ARRAY<STRUCT<
+    id: STRING,
+    name: STRING,
+    score: DOUBLE,
+    taxonomy: STRING,
+    links: STRUCT<
+      self: STRING
+    >
+  >>,
+  
   industries: ARRAY<STRUCT<
     id: LONG,
     name: STRING,
