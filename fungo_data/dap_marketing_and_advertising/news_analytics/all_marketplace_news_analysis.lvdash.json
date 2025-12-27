@@ -6,13 +6,6 @@
       "queryLines": [
         "SELECT * FROM dad_open_data.news.all_marketplace_news"
       ]
-    },
-    {
-      "name": "a5a40019",
-      "displayName": "all_news",
-      "queryLines": [
-        "SELECT * FROM main.default.all_news"
-      ]
     }
   ],
   "pages": [
