@@ -5,6 +5,10 @@
       "displayName": "eventhub_clean_ai",
       "queryLines": [
         "SELECT  published_at,\n",
+        "        YEAR(DATE(published_at)) AS published_at_year,\n",
+        "        CONCAT(YEAR(DATE(published_at)), '-', LPAD(MONTH(DATE(published_at)), 2, '0')) AS published_at_year_month,\n",
+        "        MONTH(DATE(published_at)) AS published_at_month,\n",
+        "        DATE(published_at) AS published_at_date,\n",
         "        title,\n",
         "        description,\n",
         "        body,\n",
@@ -640,52 +644,6 @@
         },
         {
           "widget": {
-            "name": "02429ee9",
-            "queries": [
-              {
-                "name": "dashboards/01f0dfefd1fd155a94239f281f4b64c1/datasets/01f0dfefd1fd1a14889595f8a6cd6b37_ai_city",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "ai_city",
-                      "expression": "`ai_city`"
-                    },
-                    {
-                      "name": "ai_city_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-single-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "ai_city",
-                    "queryName": "dashboards/01f0dfefd1fd155a94239f281f4b64c1/datasets/01f0dfefd1fd1a14889595f8a6cd6b37_ai_city"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true,
-                "showDescription": false
-              }
-            }
-          },
-          "position": {
-            "x": 2,
-            "y": 0,
-            "width": 2,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
             "name": "a680dc89",
             "queries": [
               {
@@ -740,51 +698,6 @@
             "y": 1,
             "width": 6,
             "height": 4
-          }
-        },
-        {
-          "widget": {
-            "name": "791027a4",
-            "queries": [
-              {
-                "name": "dashboards/01f0dfefd1fd155a94239f281f4b64c1/datasets/01f0dfefd1fd1a14889595f8a6cd6b37_author",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "author",
-                      "expression": "`author`"
-                    },
-                    {
-                      "name": "author_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-single-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "author",
-                    "queryName": "dashboards/01f0dfefd1fd155a94239f281f4b64c1/datasets/01f0dfefd1fd1a14889595f8a6cd6b37_author"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 4,
-            "y": 0,
-            "width": 2,
-            "height": 1
           }
         },
         {
@@ -1599,6 +1512,187 @@
                   "highlightLinks": false,
                   "useMonospaceFont": false,
                   "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "getdata_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100031,
+                  "title": "getdata_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "eh_enqueued_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100032,
+                  "title": "eh_enqueued_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "etl_processed_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100033,
+                  "title": "etl_processed_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_year",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100001,
+                  "title": "published_at_year",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_year_month",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100002,
+                  "title": "published_at_year_month",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_month",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100003,
+                  "title": "published_at_month",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_date",
+                  "type": "date",
+                  "displayAs": "datetime",
+                  "order": 100004,
+                  "title": "published_at_date",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
                 }
               ],
               "allowHTMLByDefault": false,
@@ -1609,9 +1703,9 @@
             }
           },
           "position": {
-            "x": 2,
+            "x": 0,
             "y": 11,
-            "width": 4,
+            "width": 6,
             "height": 6
           }
         },
@@ -2422,6 +2516,187 @@
                   "highlightLinks": false,
                   "useMonospaceFont": false,
                   "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "getdata_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100031,
+                  "title": "getdata_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "eh_enqueued_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100032,
+                  "title": "eh_enqueued_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "etl_processed_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100033,
+                  "title": "etl_processed_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_year",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100001,
+                  "title": "published_at_year",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_year_month",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100002,
+                  "title": "published_at_year_month",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_month",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100003,
+                  "title": "published_at_month",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_date",
+                  "type": "date",
+                  "displayAs": "datetime",
+                  "order": 100004,
+                  "title": "published_at_date",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
                 }
               ],
               "allowHTMLByDefault": false,
@@ -2432,55 +2707,10 @@
             }
           },
           "position": {
-            "x": 0,
-            "y": 11,
+            "x": 4,
+            "y": 17,
             "width": 2,
-            "height": 6
-          }
-        },
-        {
-          "widget": {
-            "name": "52422be3",
-            "queries": [
-              {
-                "name": "dashboards/01f0dfefd1fd155a94239f281f4b64c1/datasets/01f0dfefd1fd1a14889595f8a6cd6b37_ai_country",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "ai_country",
-                      "expression": "`ai_country`"
-                    },
-                    {
-                      "name": "ai_country_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-single-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "ai_country",
-                    "queryName": "dashboards/01f0dfefd1fd155a94239f281f4b64c1/datasets/01f0dfefd1fd1a14889595f8a6cd6b37_ai_country"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 1,
-            "y": 0,
-            "width": 1,
-            "height": 1
+            "height": 5
           }
         },
         {
@@ -2538,6 +2768,320 @@
             "width": 3,
             "height": 6
           }
+        },
+        {
+          "widget": {
+            "name": "90d0b3a2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "countdistinct(ai_country)",
+                      "expression": "COUNT(DISTINCT `ai_country`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(ai_country)"
+                }
+              },
+              "frame": {
+                "title": "Countries",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "983d7438",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "countdistinct(ai_city)",
+                      "expression": "COUNT(DISTINCT `ai_city`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(ai_city)"
+                }
+              },
+              "frame": {
+                "title": "Cities",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "0da20936",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "countdistinct(author)",
+                      "expression": "COUNT(DISTINCT `author`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(author)"
+                }
+              },
+              "frame": {
+                "title": "Authors",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "5365fc95",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "countdistinct(ai_language)",
+                      "expression": "COUNT(DISTINCT `ai_language`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(ai_language)"
+                }
+              },
+              "frame": {
+                "title": "Languages",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "2a3131b2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "countdistinct(published_at_date)",
+                      "expression": "COUNT(DISTINCT `published_at_date`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(published_at_date)"
+                }
+              },
+              "frame": {
+                "title": "Dates",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "18a2efa0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "is_breaking",
+                      "expression": "`is_breaking`"
+                    },
+                    {
+                      "name": "published_at_year_month",
+                      "expression": "`published_at_year_month`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "published_at_year_month",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "is_breaking",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 17,
+            "width": 2,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "d7e92c94",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "is_breaking",
+                      "expression": "`is_breaking`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "author",
+                      "expression": "`author`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "author",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "is_breaking",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "mark": {
+                "layout": "stack"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 17,
+            "width": 2,
+            "height": 5
+          }
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS"
@@ -2546,6 +3090,373 @@
       "name": "5898a469",
       "displayName": "Article Maps",
       "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "08bc2907",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "e70b6ebe",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_country",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "ai_country",
+                      "expression": "`ai_country`"
+                    },
+                    {
+                      "name": "ai_country_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ai_country",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_country"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "8377f926",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_city",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "ai_city",
+                      "expression": "`ai_city`"
+                    },
+                    {
+                      "name": "ai_city_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ai_city",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_city"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "a2a2f1af",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_language",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "ai_language",
+                      "expression": "`ai_language`"
+                    },
+                    {
+                      "name": "ai_language_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ai_language",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_language"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "7b251410",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_author",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "author",
+                      "expression": "`author`"
+                    },
+                    {
+                      "name": "author_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "author",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_author"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "9fc7b70a",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_is_breaking",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "is_breaking",
+                      "expression": "`is_breaking`"
+                    },
+                    {
+                      "name": "is_breaking_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "is_breaking",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_is_breaking"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "1833a3a7",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_date",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "published_at_date",
+                      "expression": "`published_at_date`"
+                    },
+                    {
+                      "name": "published_at_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "published_at_date",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_date"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "45caea6e",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_year",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "published_at_year",
+                      "expression": "`published_at_year`"
+                    },
+                    {
+                      "name": "published_at_year_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "published_at_year",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_year"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "57d8c07e",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_month",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "published_at_month",
+                      "expression": "`published_at_month`"
+                    },
+                    {
+                      "name": "published_at_month_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "published_at_month",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_month"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
     }
   ],
   "uiSettings": {
