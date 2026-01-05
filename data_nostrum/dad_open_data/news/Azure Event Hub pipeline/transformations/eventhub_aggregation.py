@@ -1,5 +1,6 @@
 from pyspark import pipelines as dp
 from pyspark.sql.functions import col, expr
+from pyspark.databricks.sql import functions as dbf
 
 @dp.table
 def eventhub_clean_ai():
@@ -102,7 +103,7 @@ def eventhub_clean_ai():
     .withColumn("ai_country",   col("ai_analysis.country"))  \
     .withColumn("ai_city",      col("ai_analysis.city"))     \
     .withColumn("ai_latitude",  col("ai_analysis.latitude")) \
-    .withColumn("ai_longitude", col("ai_analysis.longitude"))
-
+    .withColumn("ai_longitude", col("ai_analysis.longitude")) \
+    .withColumn("ai_h3_res_15", dbf.h3_longlatash3(col("ai_analysis.longitude"), col("ai_analysis.latitude"), expr("15")))
 
     return df
