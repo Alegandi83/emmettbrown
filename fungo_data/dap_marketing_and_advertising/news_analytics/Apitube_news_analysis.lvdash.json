@@ -48,7 +48,100 @@
         "        getdata_timestamp,\n",
         "        eh_enqueued_timestamp,\n",
         "        etl_processed_timestamp\n",
-        "FROM    dad_open_data.news.eventhub_clean_ai"
+        "FROM    dad_open_data.news.eventhub_clean_ai\n"
+      ]
+    },
+    {
+      "name": "da5353d2",
+      "displayName": "news_surveys_options",
+      "queryLines": [
+        "SELECT  -- news attributes\n",
+        "        N.etl_rec_uuid,\n",
+        "        N.published_at,\n",
+        "        YEAR(DATE(N.published_at)) AS published_at_year,\n",
+        "        CONCAT(YEAR(DATE(N.published_at)), '-', LPAD(MONTH(DATE(N.published_at)), 2, '0')) AS published_at_year_month,\n",
+        "        MONTH(DATE(N.published_at)) AS published_at_month,\n",
+        "        DATE(N.published_at) AS published_at_date,\n",
+        "        N.title,\n",
+        "        N.description,\n",
+        "        N.body,\n",
+        "        N.language,\n",
+        "        N.name as author,\n",
+        "        N.image,\n",
+        "\n",
+        "        N.categories,\n",
+        "        N.topics,\n",
+        "        N.topics.name as topics_name,\n",
+        "        N.industries,\n",
+        "        N.entities,\n",
+        "        \n",
+        "        N.source.domain,\n",
+        "        N.source.home_page_url,\n",
+        "        N.source.location.country_name,\n",
+        "        N.source.location.country_code,\n",
+        "\n",
+        "        N.summary,\n",
+        "        N.keywords,\n",
+        "        N.links,\n",
+        "        N.media,\n",
+        "        \n",
+        "        N.is_breaking,\n",
+        "        N.sentences_count,\n",
+        "        N.paragraphs_count,\n",
+        "        N.words_count,\n",
+        "        N.characters_count,\n",
+        "\n",
+        "        N.ai_language,\n",
+        "        N.ai_summary,\n",
+        "        N.ai_country,\n",
+        "        N.ai_city,\n",
+        "        N.ai_latitude,\n",
+        "        N.ai_longitude,\n",
+        "\n",
+        "        N.getdata_timestamp,\n",
+        "        N.eh_enqueued_timestamp,\n",
+        "        N.etl_processed_timestamp,\n",
+        "\n",
+        "        -- surveys attributes\n",
+        "        S.id as survey_id,\n",
+        "        S.title as survey_title,\n",
+        "        S.description as survey_description,\n",
+        "        S.question_type as survey_question_type,\n",
+        "        S.min_value as survey_min_value,\n",
+        "        S.max_value as survey_max_value,\n",
+        "        S.scale_min_label as survey_scale_min_label,\n",
+        "        S.scale_max_label as survey_scale_max_label,\n",
+        "        S.created_at as survey_created_at,\n",
+        "        S.closure_type as survey_closure_type,\n",
+        "        S.expires_at as survey_expires_at,\n",
+        "        S.is_active as survey_is_active,\n",
+        "        S.show_results_on_close as survey_show_results_on_close,\n",
+        "        S.allow_multiple_responses as survey_allow_multiple_responses,\n",
+        "        S.allow_custom_options as survey_allow_custom_options,\n",
+        "        S.require_comment as survey_require_comment,\n",
+        "        S.rating_icon as survey_rating_icon,\n",
+        "        S.is_anonymous as survey_is_anonymous,\n",
+        "        S.resource_type as survey_resource_type,\n",
+        "        S.user_id as survey_user_id,\n",
+        "        S.reasoning as survey_reasoning,\n",
+        "        S.generated_at as survey_generated_at,\n",
+        "\n",
+        "        -- surveys options attributes\n",
+        "        O.id as option_id,\n",
+        "        O.option_text as option_text,\n",
+        "        O.option_order as option_order,\n",
+        "        O.created_at as option_created_at,\n",
+        "        O.user_id as option_user_id,\n",
+        "\n",
+        "        -- locations attributes\n",
+        "        W.*\n",
+        "FROM    dad_open_data.news.eventhub_clean_ai AS N\n",
+        "LEFT OUTER JOIN dad_open_data.news.survey_ai AS S\n",
+        "  ON    N.etl_rec_uuid = S.resource_news_id\n",
+        "LEFT OUTER JOIN dad_open_data.news.survey_options_ai AS O\n",
+        "  ON    S.id = O.survey_id\n",
+        "LEFT OUTER JOIN dad_open_data.locations.world AS W\n",
+        "  ON    N.ai_city = W.cities_name"
       ]
     }
   ],
@@ -547,7 +640,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "ai_latitude",
@@ -562,8 +655,8 @@
                       "expression": "`ai_city`"
                     },
                     {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
                     }
                   ],
                   "disaggregated": false
@@ -583,7 +676,7 @@
                   }
                 },
                 "size": {
-                  "fieldName": "count(*)",
+                  "fieldName": "countdistinct(etl_rec_uuid)",
                   "scale": {
                     "type": "quantitative"
                   }
@@ -610,11 +703,11 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
                     }
                   ],
                   "disaggregated": false
@@ -626,7 +719,7 @@
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "count(*)"
+                  "fieldName": "countdistinct(etl_rec_uuid)"
                 }
               },
               "frame": {
@@ -649,7 +742,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "is_breaking",
@@ -660,8 +753,8 @@
                       "expression": "`published_at`"
                     },
                     {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
                     }
                   ],
                   "disaggregated": false
@@ -679,7 +772,7 @@
                   }
                 },
                 "y": {
-                  "fieldName": "count(*)",
+                  "fieldName": "countdistinct(etl_rec_uuid)",
                   "scale": {
                     "type": "quantitative"
                   }
@@ -702,1021 +795,12 @@
         },
         {
           "widget": {
-            "name": "9e2f1ac9",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "ai_city",
-                      "expression": "`ai_city`"
-                    },
-                    {
-                      "name": "ai_summary",
-                      "expression": "`ai_summary`"
-                    }
-                  ],
-                  "disaggregated": true
-                }
-              }
-            ],
-            "spec": {
-              "version": 1,
-              "widgetType": "table",
-              "encodings": {
-                "columns": [
-                  {
-                    "fieldName": "ai_city",
-                    "booleanValues": [
-                      "false",
-                      "true"
-                    ],
-                    "imageUrlTemplate": "{{ @ }}",
-                    "imageTitleTemplate": "{{ @ }}",
-                    "imageWidth": "",
-                    "imageHeight": "",
-                    "linkUrlTemplate": "{{ @ }}",
-                    "linkTextTemplate": "{{ @ }}",
-                    "linkTitleTemplate": "{{ @ }}",
-                    "linkOpenInNewTab": true,
-                    "type": "string",
-                    "displayAs": "string",
-                    "visible": true,
-                    "order": 0,
-                    "title": "ai_city",
-                    "allowSearch": false,
-                    "alignContent": "left",
-                    "allowHTML": false,
-                    "highlightLinks": false,
-                    "useMonospaceFont": false,
-                    "preserveWhitespace": false
-                  },
-                  {
-                    "fieldName": "ai_summary",
-                    "booleanValues": [
-                      "false",
-                      "true"
-                    ],
-                    "imageUrlTemplate": "{{ @ }}",
-                    "imageTitleTemplate": "{{ @ }}",
-                    "imageWidth": "",
-                    "imageHeight": "",
-                    "linkUrlTemplate": "{{ @ }}",
-                    "linkTextTemplate": "{{ @ }}",
-                    "linkTitleTemplate": "{{ @ }}",
-                    "linkOpenInNewTab": true,
-                    "type": "string",
-                    "displayAs": "string",
-                    "visible": true,
-                    "order": 27,
-                    "title": "ai_summary",
-                    "allowSearch": false,
-                    "alignContent": "left",
-                    "allowHTML": false,
-                    "highlightLinks": false,
-                    "useMonospaceFont": false,
-                    "preserveWhitespace": false
-                  }
-                ]
-              },
-              "invisibleColumns": [
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "published_at",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 1,
-                  "title": "published_at",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "title",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 2,
-                  "title": "title",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "description",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 3,
-                  "title": "description",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "body",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 4,
-                  "title": "body",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "language",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 5,
-                  "title": "language",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "author",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 6,
-                  "title": "author",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "image",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 7,
-                  "title": "image",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "categories",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 8,
-                  "title": "categories",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "topics",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 9,
-                  "title": "topics",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "industries",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 10,
-                  "title": "industries",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "topics_name",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 11,
-                  "title": "topics_name",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "entities",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 12,
-                  "title": "entities",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "domain",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 13,
-                  "title": "domain",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "home_page_url",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 14,
-                  "title": "home_page_url",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "country_name",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 15,
-                  "title": "country_name",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "country_code",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 16,
-                  "title": "country_code",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "summary",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 17,
-                  "title": "summary",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "keywords",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 18,
-                  "title": "keywords",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "links",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 19,
-                  "title": "links",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "media",
-                  "type": "complex",
-                  "displayAs": "json",
-                  "order": 20,
-                  "title": "media",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "is_breaking",
-                  "type": "boolean",
-                  "displayAs": "boolean",
-                  "order": 21,
-                  "title": "is_breaking",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "sentences_count",
-                  "type": "integer",
-                  "displayAs": "number",
-                  "order": 22,
-                  "title": "sentences_count",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "paragraphs_count",
-                  "type": "integer",
-                  "displayAs": "number",
-                  "order": 23,
-                  "title": "paragraphs_count",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "words_count",
-                  "type": "integer",
-                  "displayAs": "number",
-                  "order": 24,
-                  "title": "words_count",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "characters_count",
-                  "type": "integer",
-                  "displayAs": "number",
-                  "order": 25,
-                  "title": "characters_count",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "ai_language",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 26,
-                  "title": "ai_language",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "ai_country",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 28,
-                  "title": "ai_country",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0.00",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "ai_latitude",
-                  "type": "float",
-                  "displayAs": "number",
-                  "order": 29,
-                  "title": "ai_latitude",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0.00",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "ai_longitude",
-                  "type": "float",
-                  "displayAs": "number",
-                  "order": 30,
-                  "title": "ai_longitude",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "getdata_timestamp",
-                  "type": "datetime",
-                  "displayAs": "datetime",
-                  "order": 100031,
-                  "title": "getdata_timestamp",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "eh_enqueued_timestamp",
-                  "type": "datetime",
-                  "displayAs": "datetime",
-                  "order": 100032,
-                  "title": "eh_enqueued_timestamp",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "etl_processed_timestamp",
-                  "type": "datetime",
-                  "displayAs": "datetime",
-                  "order": 100033,
-                  "title": "etl_processed_timestamp",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "published_at_year",
-                  "type": "integer",
-                  "displayAs": "number",
-                  "order": 100001,
-                  "title": "published_at_year",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "published_at_year_month",
-                  "type": "string",
-                  "displayAs": "string",
-                  "order": 100002,
-                  "title": "published_at_year_month",
-                  "allowSearch": false,
-                  "alignContent": "left",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "numberFormat": "0",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "published_at_month",
-                  "type": "integer",
-                  "displayAs": "number",
-                  "order": 100003,
-                  "title": "published_at_month",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "dateTimeFormat": "DD/MM/YYYY",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "published_at_date",
-                  "type": "date",
-                  "displayAs": "datetime",
-                  "order": 100004,
-                  "title": "published_at_date",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                }
-              ],
-              "allowHTMLByDefault": false,
-              "itemsPerPage": 25,
-              "paginationSize": "default",
-              "condensed": true,
-              "withRowNumber": false
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 11,
-            "width": 6,
-            "height": 6
-          }
-        },
-        {
-          "widget": {
             "name": "42323ba7",
             "queries": [
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "topics_name",
@@ -2518,84 +1602,6 @@
                   "preserveWhitespace": false
                 },
                 {
-                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "getdata_timestamp",
-                  "type": "datetime",
-                  "displayAs": "datetime",
-                  "order": 100031,
-                  "title": "getdata_timestamp",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "eh_enqueued_timestamp",
-                  "type": "datetime",
-                  "displayAs": "datetime",
-                  "order": 100032,
-                  "title": "eh_enqueued_timestamp",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
-                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
-                  "booleanValues": [
-                    "false",
-                    "true"
-                  ],
-                  "imageUrlTemplate": "{{ @ }}",
-                  "imageTitleTemplate": "{{ @ }}",
-                  "imageWidth": "",
-                  "imageHeight": "",
-                  "linkUrlTemplate": "{{ @ }}",
-                  "linkTextTemplate": "{{ @ }}",
-                  "linkTitleTemplate": "{{ @ }}",
-                  "linkOpenInNewTab": true,
-                  "name": "etl_processed_timestamp",
-                  "type": "datetime",
-                  "displayAs": "datetime",
-                  "order": 100033,
-                  "title": "etl_processed_timestamp",
-                  "allowSearch": false,
-                  "alignContent": "right",
-                  "allowHTML": false,
-                  "highlightLinks": false,
-                  "useMonospaceFont": false,
-                  "preserveWhitespace": false
-                },
-                {
                   "numberFormat": "0",
                   "booleanValues": [
                     "false",
@@ -2697,6 +1703,794 @@
                   "highlightLinks": false,
                   "useMonospaceFont": false,
                   "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "getdata_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100031,
+                  "title": "getdata_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "eh_enqueued_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100032,
+                  "title": "eh_enqueued_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "etl_processed_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100033,
+                  "title": "etl_processed_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "etl_rec_uuid",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100000,
+                  "title": "etl_rec_uuid",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_id",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100039,
+                  "title": "survey_id",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_title",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100040,
+                  "title": "survey_title",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_description",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100041,
+                  "title": "survey_description",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_question_type",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100042,
+                  "title": "survey_question_type",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_min_value",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100043,
+                  "title": "survey_min_value",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_max_value",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100044,
+                  "title": "survey_max_value",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_scale_min_label",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100045,
+                  "title": "survey_scale_min_label",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_scale_max_label",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100046,
+                  "title": "survey_scale_max_label",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_created_at",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100047,
+                  "title": "survey_created_at",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_closure_type",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100048,
+                  "title": "survey_closure_type",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_expires_at",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100049,
+                  "title": "survey_expires_at",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_is_active",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 100050,
+                  "title": "survey_is_active",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_show_results_on_close",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 100051,
+                  "title": "survey_show_results_on_close",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_allow_multiple_responses",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 100052,
+                  "title": "survey_allow_multiple_responses",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_allow_custom_options",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 100053,
+                  "title": "survey_allow_custom_options",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_require_comment",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 100054,
+                  "title": "survey_require_comment",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_rating_icon",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100055,
+                  "title": "survey_rating_icon",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_is_anonymous",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 100056,
+                  "title": "survey_is_anonymous",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_resource_type",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100057,
+                  "title": "survey_resource_type",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_user_id",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100058,
+                  "title": "survey_user_id",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_reasoning",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 100059,
+                  "title": "survey_reasoning",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_generated_at",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100060,
+                  "title": "survey_generated_at",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "option_id",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100061,
+                  "title": "option_id",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "option_text",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100062,
+                  "title": "option_text",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "option_order",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100063,
+                  "title": "option_order",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "option_created_at",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100064,
+                  "title": "option_created_at",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "option_user_id",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 100065,
+                  "title": "option_user_id",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
                 }
               ],
               "allowHTMLByDefault": false,
@@ -2720,11 +2514,11 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
                     },
                     {
                       "name": "ai_country",
@@ -2740,7 +2534,7 @@
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "count(*)",
+                  "fieldName": "countdistinct(etl_rec_uuid)",
                   "axis": {
                     "hideTitle": true,
                     "hideLabels": false,
@@ -2776,7 +2570,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "countdistinct(ai_country)",
@@ -2815,7 +2609,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "countdistinct(ai_city)",
@@ -2854,7 +2648,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "countdistinct(author)",
@@ -2893,7 +2687,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "countdistinct(ai_language)",
@@ -2932,7 +2726,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "countdistinct(published_at_date)",
@@ -2971,7 +2765,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "is_breaking",
@@ -2982,8 +2776,8 @@
                       "expression": "`published_at_year_month`"
                     },
                     {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
                     }
                   ],
                   "disaggregated": false
@@ -3001,7 +2795,7 @@
                   }
                 },
                 "y": {
-                  "fieldName": "count(*)",
+                  "fieldName": "countdistinct(etl_rec_uuid)",
                   "scale": {
                     "type": "quantitative"
                   }
@@ -3029,15 +2823,15 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "is_breaking",
                       "expression": "`is_breaking`"
                     },
                     {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
                     },
                     {
                       "name": "author",
@@ -3053,7 +2847,7 @@
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "count(*)",
+                  "fieldName": "countdistinct(etl_rec_uuid)",
                   "scale": {
                     "type": "quantitative"
                   }
@@ -3082,6 +2876,86 @@
             "width": 2,
             "height": 5
           }
+        },
+        {
+          "widget": {
+            "name": "dbd5c081",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "etl_rec_uuid",
+                      "expression": "`etl_rec_uuid`"
+                    },
+                    {
+                      "name": "ai_city",
+                      "expression": "`ai_city`"
+                    },
+                    {
+                      "name": "ai_summary",
+                      "expression": "`ai_summary`"
+                    }
+                  ],
+                  "cubeGroupingSets": {
+                    "sets": [
+                      {
+                        "fieldNames": [
+                          "etl_rec_uuid",
+                          "ai_city"
+                        ]
+                      },
+                      {}
+                    ]
+                  },
+                  "disaggregated": true,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "`etl_rec_uuid`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`ai_city`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pivot",
+              "encodings": {
+                "rows": [
+                  {
+                    "fieldName": "etl_rec_uuid",
+                    "headerWidth": 50
+                  },
+                  {
+                    "fieldName": "ai_city"
+                  }
+                ],
+                "cell": {
+                  "type": "multi-cell",
+                  "fields": [
+                    {
+                      "fieldName": "ai_summary",
+                      "cellType": "text"
+                    }
+                  ],
+                  "width": 750
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 11,
+            "width": 6,
+            "height": 6
+          }
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS"
@@ -3100,9 +2974,9 @@
             "name": "e70b6ebe",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_country",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_country",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "ai_country",
@@ -3124,7 +2998,7 @@
                 "fields": [
                   {
                     "fieldName": "ai_country",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_country"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_country"
                   }
                 ]
               },
@@ -3145,9 +3019,9 @@
             "name": "8377f926",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_city",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_city",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "ai_city",
@@ -3169,7 +3043,7 @@
                 "fields": [
                   {
                     "fieldName": "ai_city",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_city"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_city"
                   }
                 ]
               },
@@ -3190,9 +3064,9 @@
             "name": "a2a2f1af",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_language",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_language",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "ai_language",
@@ -3214,7 +3088,7 @@
                 "fields": [
                   {
                     "fieldName": "ai_language",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_ai_language"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_language"
                   }
                 ]
               },
@@ -3235,9 +3109,9 @@
             "name": "7b251410",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_author",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_author",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "author",
@@ -3259,7 +3133,7 @@
                 "fields": [
                   {
                     "fieldName": "author",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_author"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_author"
                   }
                 ]
               },
@@ -3280,9 +3154,9 @@
             "name": "9fc7b70a",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_is_breaking",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_is_breaking",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "is_breaking",
@@ -3304,7 +3178,7 @@
                 "fields": [
                   {
                     "fieldName": "is_breaking",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_is_breaking"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_is_breaking"
                   }
                 ]
               },
@@ -3325,9 +3199,9 @@
             "name": "1833a3a7",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_date",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_date",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "published_at_date",
@@ -3349,7 +3223,7 @@
                 "fields": [
                   {
                     "fieldName": "published_at_date",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_date"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_date"
                   }
                 ]
               },
@@ -3370,9 +3244,9 @@
             "name": "45caea6e",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_year",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_year",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "published_at_year",
@@ -3394,7 +3268,7 @@
                 "fields": [
                   {
                     "fieldName": "published_at_year",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_year"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_year"
                   }
                 ]
               },
@@ -3415,9 +3289,9 @@
             "name": "57d8c07e",
             "queries": [
               {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_month",
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_month",
                 "query": {
-                  "datasetName": "dataset1",
+                  "datasetName": "da5353d2",
                   "fields": [
                     {
                       "name": "published_at_month",
@@ -3439,7 +3313,7 @@
                 "fields": [
                   {
                     "fieldName": "published_at_month",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0e987a569184aac0db9c516b41546_published_at_month"
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_month"
                   }
                 ]
               },
@@ -3457,6 +3331,2703 @@
         }
       ],
       "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    },
+    {
+      "name": "9cad7881",
+      "displayName": "Surveys Analysis",
+      "layout": [
+        {
+          "widget": {
+            "name": "b706345c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "ai_latitude",
+                      "expression": "`ai_latitude`"
+                    },
+                    {
+                      "name": "ai_longitude",
+                      "expression": "`ai_longitude`"
+                    },
+                    {
+                      "name": "ai_city",
+                      "expression": "`ai_city`"
+                    },
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "ai_latitude"
+                  },
+                  "longitude": {
+                    "fieldName": "ai_longitude"
+                  }
+                },
+                "size": {
+                  "fieldName": "countdistinct(etl_rec_uuid)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "extra": [
+                  {
+                    "fieldName": "ai_city"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 1,
+            "width": 2,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "078df342",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(etl_rec_uuid)"
+                }
+              },
+              "frame": {
+                "title": "#Records",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "296f5937",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "etl_rec_uuid",
+                      "expression": "`etl_rec_uuid`"
+                    },
+                    {
+                      "name": "ai_city",
+                      "expression": "`ai_city`"
+                    },
+                    {
+                      "name": "ai_summary",
+                      "expression": "`ai_summary`"
+                    }
+                  ],
+                  "cubeGroupingSets": {
+                    "sets": [
+                      {
+                        "fieldNames": [
+                          "etl_rec_uuid",
+                          "ai_city"
+                        ]
+                      },
+                      {}
+                    ]
+                  },
+                  "disaggregated": true,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "`etl_rec_uuid`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`ai_city`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pivot",
+              "encodings": {
+                "rows": [
+                  {
+                    "fieldName": "etl_rec_uuid",
+                    "headerWidth": 50
+                  },
+                  {
+                    "fieldName": "ai_city"
+                  }
+                ],
+                "cell": {
+                  "type": "multi-cell",
+                  "fields": [
+                    {
+                      "fieldName": "ai_summary",
+                      "cellType": "text"
+                    }
+                  ],
+                  "width": 750
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "efac6164",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(ai_country)",
+                      "expression": "COUNT(DISTINCT `ai_country`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(ai_country)"
+                }
+              },
+              "frame": {
+                "title": "Countries",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "f9d23536",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(ai_city)",
+                      "expression": "COUNT(DISTINCT `ai_city`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(ai_city)"
+                }
+              },
+              "frame": {
+                "title": "Cities",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "26dcef93",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(author)",
+                      "expression": "COUNT(DISTINCT `author`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(author)"
+                }
+              },
+              "frame": {
+                "title": "Authors",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "37e6412f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(ai_language)",
+                      "expression": "COUNT(DISTINCT `ai_language`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(ai_language)"
+                }
+              },
+              "frame": {
+                "title": "Languages",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "40bf0bdd",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(published_at_date)",
+                      "expression": "COUNT(DISTINCT `published_at_date`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(published_at_date)"
+                }
+              },
+              "frame": {
+                "title": "Dates",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "79f98617",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "is_breaking",
+                      "expression": "`is_breaking`"
+                    },
+                    {
+                      "name": "published_at_year_month",
+                      "expression": "`published_at_year_month`"
+                    },
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "published_at_year_month",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "countdistinct(etl_rec_uuid)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "is_breaking",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 2,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "anonymous",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "survey_is_anonymous",
+                      "expression": "`survey_is_anonymous`"
+                    },
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "survey_is_anonymous",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "countdistinct(etl_rec_uuid)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Anonymous"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 12,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "question-type",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    },
+                    {
+                      "name": "survey_question_type",
+                      "expression": "`survey_question_type`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "countdistinct(etl_rec_uuid)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "survey_question_type",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Question Type"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "closure-type",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "survey_closure_type",
+                      "expression": "`survey_closure_type`"
+                    },
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "survey_closure_type",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "countdistinct(etl_rec_uuid)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Closure Type"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "is-active",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "survey_is_active",
+                      "expression": "`survey_is_active`"
+                    },
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "survey_is_active",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "countdistinct(etl_rec_uuid)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Is Active"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 15,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "resource-type",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "survey_resource_type",
+                      "expression": "`survey_resource_type`"
+                    },
+                    {
+                      "name": "countdistinct(etl_rec_uuid)",
+                      "expression": "COUNT(DISTINCT `etl_rec_uuid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "survey_resource_type",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "countdistinct(etl_rec_uuid)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Resource Type"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 12,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "0bd632f7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "survey_id",
+                      "expression": "`survey_id`"
+                    },
+                    {
+                      "name": "option_text",
+                      "expression": "`option_text`"
+                    },
+                    {
+                      "name": "option_order",
+                      "expression": "`option_order`"
+                    },
+                    {
+                      "name": "option_created_at",
+                      "expression": "`option_created_at`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "survey_id",
+                    "numberFormat": "0",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "integer",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 39,
+                    "title": "survey_id",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "option_text",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "string",
+                    "displayAs": "string",
+                    "visible": true,
+                    "order": 62,
+                    "title": "option_text",
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "option_order",
+                    "numberFormat": "0",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "integer",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 63,
+                    "title": "option_order",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "option_created_at",
+                    "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "datetime",
+                    "displayAs": "datetime",
+                    "visible": true,
+                    "order": 64,
+                    "title": "option_created_at",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "invisibleColumns": [
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "ai_city",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 0,
+                  "title": "ai_city",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 1,
+                  "title": "published_at",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "title",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 2,
+                  "title": "title",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "description",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 3,
+                  "title": "description",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "body",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 4,
+                  "title": "body",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "language",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 5,
+                  "title": "language",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "author",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 6,
+                  "title": "author",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "image",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 7,
+                  "title": "image",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "categories",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 8,
+                  "title": "categories",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "topics",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 9,
+                  "title": "topics",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "industries",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 10,
+                  "title": "industries",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "topics_name",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 11,
+                  "title": "topics_name",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "entities",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 12,
+                  "title": "entities",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "domain",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 13,
+                  "title": "domain",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "home_page_url",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 14,
+                  "title": "home_page_url",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "country_name",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 15,
+                  "title": "country_name",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "country_code",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 16,
+                  "title": "country_code",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "summary",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 17,
+                  "title": "summary",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "keywords",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 18,
+                  "title": "keywords",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "links",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 19,
+                  "title": "links",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "media",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 20,
+                  "title": "media",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "is_breaking",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 21,
+                  "title": "is_breaking",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "sentences_count",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 22,
+                  "title": "sentences_count",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "paragraphs_count",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 23,
+                  "title": "paragraphs_count",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "words_count",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 24,
+                  "title": "words_count",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "characters_count",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 25,
+                  "title": "characters_count",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "ai_language",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 26,
+                  "title": "ai_language",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "ai_summary",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 27,
+                  "title": "ai_summary",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "ai_country",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 28,
+                  "title": "ai_country",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "ai_latitude",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 29,
+                  "title": "ai_latitude",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "ai_longitude",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 30,
+                  "title": "ai_longitude",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "etl_rec_uuid",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 31,
+                  "title": "etl_rec_uuid",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_year",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 32,
+                  "title": "published_at_year",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_year_month",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 33,
+                  "title": "published_at_year_month",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_month",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 34,
+                  "title": "published_at_month",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "published_at_date",
+                  "type": "date",
+                  "displayAs": "datetime",
+                  "order": 35,
+                  "title": "published_at_date",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "getdata_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 36,
+                  "title": "getdata_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "eh_enqueued_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 37,
+                  "title": "eh_enqueued_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "etl_processed_timestamp",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 38,
+                  "title": "etl_processed_timestamp",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_title",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 40,
+                  "title": "survey_title",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_description",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 41,
+                  "title": "survey_description",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_question_type",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 42,
+                  "title": "survey_question_type",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_min_value",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 43,
+                  "title": "survey_min_value",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_max_value",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 44,
+                  "title": "survey_max_value",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_scale_min_label",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 45,
+                  "title": "survey_scale_min_label",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_scale_max_label",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 46,
+                  "title": "survey_scale_max_label",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_created_at",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 47,
+                  "title": "survey_created_at",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_closure_type",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 48,
+                  "title": "survey_closure_type",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_expires_at",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 49,
+                  "title": "survey_expires_at",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_is_active",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 50,
+                  "title": "survey_is_active",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_show_results_on_close",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 51,
+                  "title": "survey_show_results_on_close",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_allow_multiple_responses",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 52,
+                  "title": "survey_allow_multiple_responses",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_allow_custom_options",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 53,
+                  "title": "survey_allow_custom_options",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_require_comment",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 54,
+                  "title": "survey_require_comment",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_rating_icon",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 55,
+                  "title": "survey_rating_icon",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_is_anonymous",
+                  "type": "boolean",
+                  "displayAs": "boolean",
+                  "order": 56,
+                  "title": "survey_is_anonymous",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_resource_type",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 57,
+                  "title": "survey_resource_type",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_user_id",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 58,
+                  "title": "survey_user_id",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_reasoning",
+                  "type": "complex",
+                  "displayAs": "json",
+                  "order": 59,
+                  "title": "survey_reasoning",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "survey_generated_at",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 60,
+                  "title": "survey_generated_at",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "option_id",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 61,
+                  "title": "option_id",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "option_user_id",
+                  "type": "integer",
+                  "displayAs": "number",
+                  "order": 65,
+                  "title": "option_user_id",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                }
+              ],
+              "allowHTMLByDefault": false,
+              "itemsPerPage": 25,
+              "paginationSize": "default",
+              "condensed": true,
+              "withRowNumber": false
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 24,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "621ffea5",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "survey_title",
+                      "expression": "`survey_title`"
+                    },
+                    {
+                      "name": "survey_description",
+                      "expression": "`survey_description`"
+                    }
+                  ],
+                  "cubeGroupingSets": {
+                    "sets": [
+                      {
+                        "fieldNames": [
+                          "survey_title"
+                        ]
+                      },
+                      {}
+                    ]
+                  },
+                  "disaggregated": true,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "`survey_title`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pivot",
+              "encodings": {
+                "rows": [
+                  {
+                    "fieldName": "survey_title"
+                  }
+                ],
+                "cell": {
+                  "type": "multi-cell",
+                  "fields": [
+                    {
+                      "fieldName": "survey_description",
+                      "cellType": "text"
+                    }
+                  ],
+                  "width": 600
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 18,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "577d0ab0",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_survey_title",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "survey_title",
+                      "expression": "`survey_title`"
+                    },
+                    {
+                      "name": "survey_title_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "survey_title",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_survey_title"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 17,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "4d91ebf4",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_summary",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "ai_summary",
+                      "expression": "`ai_summary`"
+                    },
+                    {
+                      "name": "ai_summary_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ai_summary",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_summary"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 5,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "7c933f1f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(survey_id)",
+                      "expression": "COUNT(DISTINCT `survey_id`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(survey_id)"
+                }
+              },
+              "frame": {
+                "title": "Surveys",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "491db6c8",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "countdistinct(option_id)",
+                      "expression": "COUNT(DISTINCT `option_id`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(option_id)"
+                }
+              },
+              "frame": {
+                "title": "Options",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
     }
   ],
   "uiSettings": {
