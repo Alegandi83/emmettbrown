@@ -5,7 +5,7 @@ from pyspark.databricks.sql import functions as dbf
 @dp.table
 def eventhub_clean_ai():
     df = (
-        spark.read.table("dad_open_data.news.eventhub_raw")
+        spark.readStream.table("dad_open_data.news.eventhub_raw")
         .select(
             "topic", 
             "partition", 
@@ -52,6 +52,8 @@ def eventhub_clean_ai():
         )
     )
 
+
+
     df = df.withColumn(
         "ai_analysis",
         expr("""
@@ -60,10 +62,10 @@ def eventhub_clean_ai():
                 'databricks-meta-llama-3-3-70b-instruct',
                 concat(
                 'You are an AI assistant that is focused on reviewing a news article and defining the language it has been written in, a very detailed summary of it based on the title, and which country and city in the world is the most relevant to it. ',
-                'You always have to answer a single city, even if not sure about it. You have to return the result in JSON format, with the language, summary, country, city you infer and its latitude and longitude. ',
+                'You always have to answer a single city, even if not sure about it. You have to return the result in JSON format, with the language, summary, country, city you infer, its actual state_iso3166_2 code (pay attention to obsolete codes), city latitude and longitude and city wikidataID ',
                 'The summary and title MUST BE in the same language of the article itself. ',
-                'You have to return the result as a JSON, with the following format and without adding absolutely nothing more: { "language": "Italian", "summary": "summary of article", "country": "Italy", "city": "Milan", "latitude": 123, "longitude": 123 }. ',
-                'DO NOT return "[json { "language": "Italian", "summary": "detailed summary of article", "country": "Italy", "city": "Milan", "latitude": 123, "longitude": 123 } ]", only the actual JSON. This is the source, composed by a title and a description, where apply your analysis: --- TITLE ---',
+                'You have to return the result as a JSON, with the following format and without adding absolutely nothing more: { "language": "Italian", "summary": "summary of article", "country": "Italy", "city": "Milan", "state_iso3166_2": "IT-25", "latitude": 123, "longitude": 123, "wikidataID": "Q18502020" }. ',
+                'DO NOT return "[json { "language": "Italian", "summary": "detailed summary of article", "country": "Italy", "city": "Milan", "state_iso3166_2": "IT-25", "latitude": 123, "longitude": 123, "wikidataID": "Q18502020" } ]", only the actual JSON. This is the source, composed by a title and a description, where apply your analysis: --- TITLE ---',
                 parsed_records.title,
                 ' --- DESCRIPTION ---',
                 parsed_records.description
@@ -75,35 +77,41 @@ def eventhub_clean_ai():
                     "schema": {
                     "type": "object",
                     "properties": {
-                        "language":  { "type": "string" },
-                        "summary":   { "type": "string" },
-                        "country":   { "type": "string" },
-                        "city":      { "type": "string" },
-                        "latitude":  { "type": "number" },
-                        "longitude": { "type": "number" }
+                        "language":         { "type": "string" },
+                        "summary":          { "type": "string" },
+                        "country":          { "type": "string" },
+                        "city":             { "type": "string" },
+                        "state_iso3166_2":  { "type": "string" },
+                        "latitude":         { "type": "number" },
+                        "longitude":        { "type": "number" },
+                        "wikidataID":       { "type": "string" }
                     },
-                    "required": ["language", "summary", "country", "city", "latitude", "longitude"],
+                    "required": ["language", "summary", "country", "city", "state_iso3166_2", "latitude", "longitude", "wikidataID"],
                     "additionalProperties": false
                     }
                 }
                 }'
             ),
             'STRUCT<
-                language  STRING,
-                summary   STRING,
-                country   STRING,
-                city      STRING,
-                latitude  DOUBLE,
-                longitude DOUBLE
+                language        STRING,
+                summary         STRING,
+                country         STRING,
+                city            STRING,
+                state_iso3166_2 STRING,
+                latitude        DOUBLE,
+                longitude       DOUBLE,
+                wikidataID      STRING
             >'
             )
         """)
-    ).withColumn("ai_language",  col("ai_analysis.language")) \
+    ).withColumn("ai_language", col("ai_analysis.language")) \
     .withColumn("ai_summary",   col("ai_analysis.summary"))  \
     .withColumn("ai_country",   col("ai_analysis.country"))  \
     .withColumn("ai_city",      col("ai_analysis.city"))     \
+    .withColumn("ai_state",     col("ai_analysis.state_iso3166_2")) \
     .withColumn("ai_latitude",  col("ai_analysis.latitude")) \
     .withColumn("ai_longitude", col("ai_analysis.longitude")) \
+    .withColumn("ai_wikidataID",col("ai_analysis.wikidataID")) \
     .withColumn("ai_h3_res_15", dbf.h3_longlatash3(col("ai_analysis.longitude"), col("ai_analysis.latitude"), expr("15")))
-
+    
     return df
