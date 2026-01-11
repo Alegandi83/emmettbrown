@@ -11,13 +11,13 @@ def survey_ai():
     FLUSSO:
     1. Legge da dad_open_data.news.eventhub_clean_ai
     2. Applica un prompt AI per creare sondaggi strutturati
-    3. Genera un ID BIGINT per il campo 'id' derivato da etl_rec_uuid tramite xxhash64()
+    3. Usa il campo 'id' da eventhub_clean_ai (relazione 1:1) come BIGINT
     4. Scrive nella tabella DLT LIVE.survey_ai
     5. La tabella survey_options_ai leggerà da LIVE.survey_ai usando il campo 'id'
     
     NOTA: 
-    - Il campo 'id' è di tipo BIGINT generato deterministicamente tramite xxhash64(etl_rec_uuid)
-    - La generazione è deterministica: stesso etl_rec_uuid → stesso id
+    - Il campo 'id' è di tipo BIGINT preso direttamente da eventhub_clean_ai
+    - La relazione è 1:1: ogni record di eventhub_clean_ai genera un survey con lo stesso id
     - La tabella viene creata nel namespace DLT (LIVE.survey_ai) perché una tabella MANAGED 
       esiste già in dad_open_data.news.survey_ai
     """
@@ -245,9 +245,9 @@ def survey_ai():
     )
     
     # Esplodi i campi del sondaggio generato per facilitare l'accesso (senza prefisso survey_)
-    # Il campo 'id' è derivato da etl_rec_uuid attraverso una funzione di hashing deterministica
+    # Il campo 'id' viene preso direttamente da eventhub_clean_ai (relazione 1:1) come BIGINT
     df = df \
-        .withColumn("id", expr("xxhash64(etl_rec_uuid)")) \
+        .withColumn("id", col("id")) \
         .withColumn("title", col("survey_generation.survey.title")) \
         .withColumn("description", col("survey_generation.survey.description")) \
         .withColumn("question_type", col("survey_generation.survey.question_type")) \
@@ -261,7 +261,7 @@ def survey_ai():
         .withColumn("is_anonymous", col("survey_generation.survey.is_anonymous")) \
         .withColumn("resource_type", col("survey_generation.survey.resource_type")) \
         .withColumn("resource_url", col("href")) \
-        .withColumn("resource_news_id", col("etl_rec_uuid")) \
+        .withColumn("resource_news_id", col("id")) \
         .withColumn("user_id", expr("1")) \
         .withColumn("rating_icon", col("survey_generation.survey.rating_icon")) \
         .withColumn("min_value", col("survey_generation.survey.min_value")) \
@@ -328,13 +328,14 @@ def survey_options_ai():
     FLUSSO:
     1. Legge dalla tabella DLT LIVE.survey_ai (dataframe della funzione survey_ai)
     2. Esplode l'array 'options' per creare una riga per ogni opzione
-    3. Genera un ID BIGINT per ogni opzione derivato da survey_id + option_order tramite xxhash64()
+    3. Genera un ID BIGINT per ogni opzione concatenando survey_id + option_order
     4. Usa 'id' da LIVE.survey_ai come 'survey_id' per il collegamento
     5. Scrive nella tabella DLT LIVE.survey_options_ai
     
     NOTA: 
-    - Il campo 'id' è di tipo BIGINT generato deterministicamente tramite xxhash64(survey_id + option_order)
+    - Il campo 'id' è di tipo BIGINT generato concatenando survey_id (da eventhub_clean_ai) con option_order
     - La generazione è deterministica: stesso survey_id + option_order → stesso id
+    - Esempio: survey_id=123, option_order=1 → id=1231
     - La tabella viene creata nel namespace DLT (LIVE.survey_options_ai) perché una tabella MANAGED 
       esiste già in dad_open_data.news.survey_options_ai
     """
@@ -346,26 +347,26 @@ def survey_options_ai():
     from pyspark.sql.functions import explode
     
     # Esplodi l'array di opzioni per creare una riga per ogni opzione
-    # Il campo 'id' è disponibile dalla tabella survey_ai
+    # Il campo 'id' è disponibile dalla tabella survey_ai (derivato da eventhub_clean_ai)
     df_options = df_options.select(
-        col("id").alias("survey_id"),  # Campo INT generato dalla tabella survey_ai
+        col("id").alias("survey_id"),  # Campo BIGINT da eventhub_clean_ai (relazione 1:1)
         col("created_at").alias("survey_created_at"),
         explode("options").alias("option")
     )
     
     # Genera ID per questa tabella e estrai i campi dall'opzione
-    # L'ID è derivato combinando survey_id (hash di etl_rec_uuid) con option_order
+    # L'ID è derivato concatenando survey_id con option_order come BIGINT
     df_options = df_options \
         .withColumn("option_text", col("option.option_text")) \
         .withColumn("option_order", col("option.option_order")) \
-        .withColumn("id", expr("xxhash64(concat(cast(survey_id as string), '_', cast(option.option_order as string)))")) \
+        .withColumn("id", expr("cast(concat(cast(survey_id as string), cast(option.option_order as string)) as bigint)")) \
         .withColumn("created_at", col("survey_created_at")) \
         .withColumn("user_id", expr("1"))
     
     # Seleziona i campi finali da scrivere
     df_options = df_options.select(
-        "id",              # ID INT generato per questa opzione
-        "survey_id",       # ID del survey (dalla tabella survey_ai)
+        "id",              # ID BIGINT generato concatenando survey_id + option_order
+        "survey_id",       # ID del survey (da eventhub_clean_ai tramite survey_ai)
         "option_text",     # Testo dell'opzione
         "option_order",    # Ordine di visualizzazione
         "created_at",      # Timestamp ereditato dal survey

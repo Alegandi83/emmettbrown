@@ -2,7 +2,12 @@ from pyspark import pipelines as dp
 from pyspark.sql.functions import col, expr
 from pyspark.databricks.sql import functions as dbf
 
-@dp.table
+@dp.table(
+    table_properties={
+        "pipelines.autoOptimize.zOrderCols": "id",
+        "delta.enableChangeDataFeed": "true"
+    }
+)
 def eventhub_clean_ai():
     df = (
         spark.readStream.table("dad_open_data.news.eventhub_raw")
@@ -12,7 +17,7 @@ def eventhub_clean_ai():
             "offset", 
             "timestamp", 
             "timestampType",
-            "parsed_records.id",
+            col("parsed_records.id").alias("id"),
             "parsed_records.href",
             "parsed_records.published_at",
             "parsed_records.title",
@@ -50,6 +55,8 @@ def eventhub_clean_ai():
             "etl_processed_timestamp",
             "etl_rec_uuid"
         )
+        .withWatermark("timestamp", "7 days")
+        .dropDuplicates(["id"])
     )
 
 
