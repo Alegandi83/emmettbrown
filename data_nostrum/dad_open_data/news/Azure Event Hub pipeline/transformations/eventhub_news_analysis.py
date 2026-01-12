@@ -8,7 +8,7 @@ from pyspark.databricks.sql import functions as dbf
         "delta.enableChangeDataFeed": "true"
     }
 )
-def eventhub_clean_ai():
+def clean_news():
     df = (
         spark.readStream.table("dad_open_data.news.eventhub_raw")
         .select(

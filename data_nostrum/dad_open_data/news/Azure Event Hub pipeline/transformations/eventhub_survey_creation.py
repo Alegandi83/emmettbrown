@@ -23,7 +23,7 @@ def survey_ai():
     """
     
     # Leggi dalla tabella esistente eventhub_clean_ai
-    df = spark.readStream.table("dad_open_data.news.eventhub_clean_ai")
+    df = spark.readStream.table("dad_open_data.news.clean_news")
     
     # Prepara l'input JSON per l'AI usando i campi già analizzati
     df = df.withColumn(
