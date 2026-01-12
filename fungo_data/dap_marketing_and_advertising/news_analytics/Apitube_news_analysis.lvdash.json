@@ -48,7 +48,7 @@
         "        getdata_timestamp,\n",
         "        eh_enqueued_timestamp,\n",
         "        etl_processed_timestamp\n",
-        "FROM    dad_open_data.news.eventhub_clean_ai\n"
+        "FROM    dad_open_data.news.clean_news\n"
       ]
     },
     {
@@ -77,7 +77,7 @@
         "        \n",
         "        N.source.domain,\n",
         "        N.source.home_page_url,\n",
-        "        N.source.location.country_name,\n",
+        "        N.source.location.country_name as news_country_name,\n",
         "        N.source.location.country_code,\n",
         "\n",
         "        N.summary,\n",
@@ -135,13 +135,23 @@
         "\n",
         "        -- locations attributes\n",
         "        W.*\n",
-        "FROM    dad_open_data.news.eventhub_clean_ai AS N\n",
+        "FROM    dad_open_data.news.clean_news AS N\n",
         "LEFT OUTER JOIN dad_open_data.news.survey_ai AS S\n",
-        "  ON    N.etl_rec_uuid = S.resource_news_id\n",
+        "  ON    N.id = S.resource_news_id\n",
         "LEFT OUTER JOIN dad_open_data.news.survey_options_ai AS O\n",
         "  ON    S.id = O.survey_id\n",
         "LEFT OUTER JOIN dad_open_data.locations.world AS W\n",
         "  ON    N.ai_city = W.cities_name"
+      ]
+    },
+    {
+      "name": "3dc5db43",
+      "displayName": "Survey Insights with Linked Options Dataset",
+      "queryLines": [
+        "SELECT  *\n",
+        "FROM    webdemocracy_database_catalog.webdemocracy.surveys AS S\n",
+        "LEFT OUTER JOIN webdemocracy_database_catalog.webdemocracy.survey_options AS O\n",
+        "  ON    S.id = O.survey_id"
       ]
     }
   ],
