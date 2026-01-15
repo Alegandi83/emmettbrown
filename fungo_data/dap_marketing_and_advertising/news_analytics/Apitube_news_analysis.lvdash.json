@@ -157,489 +157,6 @@
   ],
   "pages": [
     {
-      "name": "cca3c58c",
-      "displayName": "Ingestion Monitor",
-      "layout": [
-        {
-          "widget": {
-            "name": "17e47e40",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "getdata_timestamp",
-                      "expression": "`getdata_timestamp`"
-                    },
-                    {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 3,
-              "widgetType": "line",
-              "encodings": {
-                "x": {
-                  "fieldName": "getdata_timestamp",
-                  "scale": {
-                    "type": "temporal"
-                  }
-                },
-                "y": {
-                  "fieldName": "count(*)",
-                  "scale": {
-                    "type": "quantitative"
-                  }
-                },
-                "label": {
-                  "show": false
-                }
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 1,
-            "width": 5,
-            "height": 3
-          }
-        },
-        {
-          "widget": {
-            "name": "0c79ae85",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "eh_enqueued_timestamp",
-                      "expression": "`eh_enqueued_timestamp`"
-                    },
-                    {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 3,
-              "widgetType": "line",
-              "encodings": {
-                "x": {
-                  "fieldName": "eh_enqueued_timestamp",
-                  "scale": {
-                    "type": "temporal"
-                  }
-                },
-                "y": {
-                  "fieldName": "count(*)",
-                  "scale": {
-                    "type": "quantitative"
-                  }
-                }
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 4,
-            "width": 5,
-            "height": 3
-          }
-        },
-        {
-          "widget": {
-            "name": "72ad596b",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "etl_processed_timestamp",
-                      "expression": "`etl_processed_timestamp`"
-                    },
-                    {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 3,
-              "widgetType": "line",
-              "encodings": {
-                "x": {
-                  "fieldName": "etl_processed_timestamp",
-                  "scale": {
-                    "type": "temporal"
-                  }
-                },
-                "y": {
-                  "fieldName": "count(*)",
-                  "scale": {
-                    "type": "quantitative"
-                  }
-                }
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 7,
-            "width": 5,
-            "height": 3
-          }
-        },
-        {
-          "widget": {
-            "name": "000ad38c",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "etl_processed_timestamp",
-                      "expression": "`etl_processed_timestamp`"
-                    },
-                    {
-                      "name": "sum(characters_count)",
-                      "expression": "SUM(`characters_count`)"
-                    },
-                    {
-                      "name": "sum(words_count)",
-                      "expression": "SUM(`words_count`)"
-                    },
-                    {
-                      "name": "sum(sentences_count)",
-                      "expression": "SUM(`sentences_count`)"
-                    },
-                    {
-                      "name": "sum(paragraphs_count)",
-                      "expression": "SUM(`paragraphs_count`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 3,
-              "widgetType": "line",
-              "encodings": {
-                "x": {
-                  "fieldName": "etl_processed_timestamp",
-                  "scale": {
-                    "type": "temporal"
-                  }
-                },
-                "y": {
-                  "scale": {
-                    "type": "quantitative"
-                  },
-                  "fields": [
-                    {
-                      "fieldName": "sum(characters_count)"
-                    },
-                    {
-                      "fieldName": "sum(words_count)"
-                    },
-                    {
-                      "fieldName": "sum(sentences_count)"
-                    },
-                    {
-                      "fieldName": "sum(paragraphs_count)"
-                    }
-                  ]
-                }
-              },
-              "mark": {
-                "colors": [
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 2
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 1
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 4
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 3
-                  }
-                ]
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 10,
-            "width": 5,
-            "height": 3
-          }
-        },
-        {
-          "widget": {
-            "name": "59b5e28d",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "secondly(eh_enqueued_timestamp)",
-                      "expression": "DATE_TRUNC(\"SECOND\", `eh_enqueued_timestamp`)"
-                    }
-                  ],
-                  "disaggregated": false,
-                  "orders": [
-                    {
-                      "direction": "DESC",
-                      "expression": "DATE_TRUNC(\"SECOND\", `eh_enqueued_timestamp`)"
-                    }
-                  ]
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "period": {
-                  "fieldName": "secondly(eh_enqueued_timestamp)"
-                }
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 0,
-            "width": 1,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
-            "name": "records",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "count(*)",
-                      "expression": "COUNT(`*`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "value": {
-                  "fieldName": "count(*)"
-                }
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "Records"
-              }
-            }
-          },
-          "position": {
-            "x": 1,
-            "y": 0,
-            "width": 1,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
-            "name": "2e4d4977",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "sum(words_count)",
-                      "expression": "SUM(`words_count`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "value": {
-                  "fieldName": "sum(words_count)"
-                }
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "words"
-              }
-            }
-          },
-          "position": {
-            "x": 3,
-            "y": 0,
-            "width": 1,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
-            "name": "70a17b32",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "sum(characters_count)",
-                      "expression": "SUM(`characters_count`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "value": {
-                  "fieldName": "sum(characters_count)"
-                }
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "chars"
-              }
-            }
-          },
-          "position": {
-            "x": 2,
-            "y": 0,
-            "width": 1,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
-            "name": "ff4c3e16",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "sum(sentences_count)",
-                      "expression": "SUM(`sentences_count`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "value": {
-                  "fieldName": "sum(sentences_count)"
-                }
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "sentences"
-              }
-            }
-          },
-          "position": {
-            "x": 4,
-            "y": 0,
-            "width": 1,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
-            "name": "2102d441",
-            "queries": [
-              {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "dataset1",
-                  "fields": [
-                    {
-                      "name": "sum(paragraphs_count)",
-                      "expression": "SUM(`paragraphs_count`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "counter",
-              "encodings": {
-                "value": {
-                  "fieldName": "sum(paragraphs_count)"
-                }
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "pharagraps"
-              }
-            }
-          },
-          "position": {
-            "x": 5,
-            "y": 0,
-            "width": 1,
-            "height": 1
-          }
-        }
-      ],
-      "pageType": "PAGE_TYPE_CANVAS"
-    },
-    {
       "name": "page1",
       "displayName": "News Analysis",
       "layout": [
@@ -2969,378 +2486,6 @@
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS"
-    },
-    {
-      "name": "5898a469",
-      "displayName": "Article Maps",
-      "pageType": "PAGE_TYPE_CANVAS"
-    },
-    {
-      "name": "08bc2907",
-      "displayName": "Global Filters",
-      "layout": [
-        {
-          "widget": {
-            "name": "e70b6ebe",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_country",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "ai_country",
-                      "expression": "`ai_country`"
-                    },
-                    {
-                      "name": "ai_country_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-multi-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "ai_country",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_country"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 0,
-            "width": 1,
-            "height": 2
-          }
-        },
-        {
-          "widget": {
-            "name": "8377f926",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_city",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "ai_city",
-                      "expression": "`ai_city`"
-                    },
-                    {
-                      "name": "ai_city_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-multi-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "ai_city",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_city"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 2,
-            "width": 1,
-            "height": 2
-          }
-        },
-        {
-          "widget": {
-            "name": "a2a2f1af",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_language",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "ai_language",
-                      "expression": "`ai_language`"
-                    },
-                    {
-                      "name": "ai_language_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-multi-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "ai_language",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_language"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 4,
-            "width": 1,
-            "height": 2
-          }
-        },
-        {
-          "widget": {
-            "name": "7b251410",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_author",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "author",
-                      "expression": "`author`"
-                    },
-                    {
-                      "name": "author_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-multi-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "author",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_author"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 6,
-            "width": 1,
-            "height": 2
-          }
-        },
-        {
-          "widget": {
-            "name": "9fc7b70a",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_is_breaking",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "is_breaking",
-                      "expression": "`is_breaking`"
-                    },
-                    {
-                      "name": "is_breaking_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-single-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "is_breaking",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_is_breaking"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 8,
-            "width": 1,
-            "height": 2
-          }
-        },
-        {
-          "widget": {
-            "name": "1833a3a7",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_date",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "published_at_date",
-                      "expression": "`published_at_date`"
-                    },
-                    {
-                      "name": "published_at_date_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-date-range-picker",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "published_at_date",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_date"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 10,
-            "width": 1,
-            "height": 2
-          }
-        },
-        {
-          "widget": {
-            "name": "45caea6e",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_year",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "published_at_year",
-                      "expression": "`published_at_year`"
-                    },
-                    {
-                      "name": "published_at_year_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-multi-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "published_at_year",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_year"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 12,
-            "width": 1,
-            "height": 2
-          }
-        },
-        {
-          "widget": {
-            "name": "57d8c07e",
-            "queries": [
-              {
-                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_month",
-                "query": {
-                  "datasetName": "da5353d2",
-                  "fields": [
-                    {
-                      "name": "published_at_month",
-                      "expression": "`published_at_month`"
-                    },
-                    {
-                      "name": "published_at_month_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 2,
-              "widgetType": "filter-multi-select",
-              "encodings": {
-                "fields": [
-                  {
-                    "fieldName": "published_at_month",
-                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_month"
-                  }
-                ]
-              },
-              "frame": {
-                "showTitle": true
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 14,
-            "width": 1,
-            "height": 2
-          }
-        }
-      ],
-      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
     },
     {
       "name": "9cad7881",
@@ -6033,6 +5178,861 @@
             "x": 4,
             "y": 2,
             "width": 2,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "5898a469",
+      "displayName": "Article Maps",
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "08bc2907",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "e70b6ebe",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_country",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "ai_country",
+                      "expression": "`ai_country`"
+                    },
+                    {
+                      "name": "ai_country_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ai_country",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_country"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "8377f926",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_city",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "ai_city",
+                      "expression": "`ai_city`"
+                    },
+                    {
+                      "name": "ai_city_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ai_city",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_city"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "a2a2f1af",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_language",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "ai_language",
+                      "expression": "`ai_language`"
+                    },
+                    {
+                      "name": "ai_language_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "ai_language",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_ai_language"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "7b251410",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_author",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "author",
+                      "expression": "`author`"
+                    },
+                    {
+                      "name": "author_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "author",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_author"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "9fc7b70a",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_is_breaking",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "is_breaking",
+                      "expression": "`is_breaking`"
+                    },
+                    {
+                      "name": "is_breaking_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "is_breaking",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_is_breaking"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "1833a3a7",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_date",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "published_at_date",
+                      "expression": "`published_at_date`"
+                    },
+                    {
+                      "name": "published_at_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "published_at_date",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_date"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "45caea6e",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_year",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "published_at_year",
+                      "expression": "`published_at_year`"
+                    },
+                    {
+                      "name": "published_at_year_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "published_at_year",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_year"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "57d8c07e",
+            "queries": [
+              {
+                "name": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_month",
+                "query": {
+                  "datasetName": "da5353d2",
+                  "fields": [
+                    {
+                      "name": "published_at_month",
+                      "expression": "`published_at_month`"
+                    },
+                    {
+                      "name": "published_at_month_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "published_at_month",
+                    "queryName": "dashboards/01f0e987a5681e5183aa2106f34e8c44/datasets/01f0edf8fb9e14b4987bba99c2a72b6e_published_at_month"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    },
+    {
+      "name": "cca3c58c",
+      "displayName": "Ingestion Monitor",
+      "layout": [
+        {
+          "widget": {
+            "name": "17e47e40",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "getdata_timestamp",
+                      "expression": "`getdata_timestamp`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "getdata_timestamp",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 5,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "0c79ae85",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "eh_enqueued_timestamp",
+                      "expression": "`eh_enqueued_timestamp`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "eh_enqueued_timestamp",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 5,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "72ad596b",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "etl_processed_timestamp",
+                      "expression": "`etl_processed_timestamp`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "etl_processed_timestamp",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 5,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "000ad38c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "etl_processed_timestamp",
+                      "expression": "`etl_processed_timestamp`"
+                    },
+                    {
+                      "name": "sum(characters_count)",
+                      "expression": "SUM(`characters_count`)"
+                    },
+                    {
+                      "name": "sum(words_count)",
+                      "expression": "SUM(`words_count`)"
+                    },
+                    {
+                      "name": "sum(sentences_count)",
+                      "expression": "SUM(`sentences_count`)"
+                    },
+                    {
+                      "name": "sum(paragraphs_count)",
+                      "expression": "SUM(`paragraphs_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "etl_processed_timestamp",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(characters_count)"
+                    },
+                    {
+                      "fieldName": "sum(words_count)"
+                    },
+                    {
+                      "fieldName": "sum(sentences_count)"
+                    },
+                    {
+                      "fieldName": "sum(paragraphs_count)"
+                    }
+                  ]
+                }
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 5,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "59b5e28d",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "secondly(eh_enqueued_timestamp)",
+                      "expression": "DATE_TRUNC(\"SECOND\", `eh_enqueued_timestamp`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "DATE_TRUNC(\"SECOND\", `eh_enqueued_timestamp`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "period": {
+                  "fieldName": "secondly(eh_enqueued_timestamp)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "records",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(*)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Records"
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "2e4d4977",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "sum(words_count)",
+                      "expression": "SUM(`words_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(words_count)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "words"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "70a17b32",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "sum(characters_count)",
+                      "expression": "SUM(`characters_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(characters_count)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "chars"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "ff4c3e16",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "sum(sentences_count)",
+                      "expression": "SUM(`sentences_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(sentences_count)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "sentences"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "2102d441",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dataset1",
+                  "fields": [
+                    {
+                      "name": "sum(paragraphs_count)",
+                      "expression": "SUM(`paragraphs_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(paragraphs_count)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "pharagraps"
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 0,
+            "width": 1,
             "height": 1
           }
         }
